@@ -1,5 +1,6 @@
 <template>
-  <div class="{{componentName}}">
+  <div class="{{componentName}}" v-bind="$attrs" v-on="$listeners">
+    hello
   </div>
 </template>
 
@@ -13,8 +14,4 @@ export default {
 }
 </script>
 
-<style lang="stylus">
-.{{componentName}} {
-
-}
-</style>
+<style lang="less"></style>

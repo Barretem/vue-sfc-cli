@@ -1,172 +1,91 @@
 #! /usr/bin/env node
 
+const { logger, kebabcasify } = require('./utils')
+const FileActions = require('./lib/fileActions')
+const parseArgs = require('./lib/parseArgs')
+const kleur = require('kleur')
 const path = require('path')
-const fs = require('fs')
-const readlineSync = require('readline-sync')
+const readline = require('readline-sync')
+const { setShellFilePermission } = require('./utils/update-files')
 
-// Helpers for creating kebab-case/PascalCase versions of string
-const pascalify = str => {
-  const camelized = str.replace(/-([a-z])/g, c => c[1].toUpperCase())
-  return camelized.charAt(0).toUpperCase() + camelized.slice(1)
-}
-const kebabcase = string =>
-  string
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/\s+/g, '-')
-    .toLowerCase()
+const argv = parseArgs(process.argv.slice(2))
 
-// Helper to replace vars in files
-const replaceVars = function replaceVars(str, vars) {
-  let newstr = str
-  Object.keys(vars).forEach(key => {
-    const rx = new RegExp('{{\\s?' + key + '\\s?}}', 'g')
-    newstr = newstr.replace(rx, vars[key])
-  })
-  return newstr
+let pkg = {}
+let pkgName = ''
+/**
+ * Prompt user for input to populate template files
+ */
+let npmName = argv.get('name')
+let ownerName = argv.get('owner')
+const OWNER_NAME = 'FEMessage'
+
+function isUpgrade() {
+  return argv.has('u') || argv.has('upgrade')
 }
 
-// Helper to ensure directory exists before writing file to it
-const ensureDirectoryExists = filePath => {
-  const dirname = path.dirname(filePath)
-  if (fs.existsSync(dirname)) {
-    return true
-  }
-  ensureDirectoryExists(dirname)
-  fs.mkdirSync(dirname)
+if (isUpgrade()) {
+  try {
+    pkg = require(path.join(process.cwd(), 'package.json'))
+    pkgName = pkg.name.replace(/^@[\w-]*\//, '')
+  } catch {}
 }
 
-// Prompt user for input to populate template files
-const npmName = readlineSync.question(
-  'What is the npm name of your component? '
-)
-// const componentName = readlineSync.question('What is the kebab-case tag name for your component? ('+kebabcase(npmName)+') ', {
-//     defaultInput: kebabcase(npmName),
-// });
-
-const componentName = kebabcase(npmName)
-
-const savePath = readlineSync.questionPath(
-  'Enter a location to save the component files: (./' + componentName + ') ',
-  {
-    defaultInput: path.join(process.cwd(), componentName),
-    exists: false,
-    isDirectory: true,
-    create: true
-  }
-)
-
-// Stop prompting for input, start processing
-const componentNamePascal = pascalify(componentName)
-const vars = {
-  npmName,
-  componentName,
-  componentNamePascal,
-	licenseYear: new Date().getFullYear()
+if (argv.has('test')) {
+  npmName = 'v-test'
+  ownerName = OWNER_NAME
 }
 
-const testFileName = 'index.test.js'
+const promptAngle = kleur.dim('> ')
 
-// source files
-const newFiles = {
-  testjs: fs.readFileSync(
-    path.join(__dirname, 'templates', 'test', testFileName)
+if (!npmName) {
+  console.log(
+    `The component name: ${pkgName ? kleur.dim(`(${pkgName})`) : ''}`
   )
+  npmName = readline.prompt({
+    defaultInput: pkgName,
+    prompt: promptAngle
+  })
 }
 
-newFiles.package = replaceVars(
-  fs.readFileSync(path.join(__dirname, 'templates', 'package-json')).toString(),
-  vars
-)
-newFiles.rollupConfig = replaceVars(
-  fs
-    .readFileSync(
-      path.join(__dirname, 'templates', 'build', 'rollup.config.js')
-    )
-    .toString(),
-  vars
-)
-newFiles.indexjs = replaceVars(
-  fs
-    .readFileSync(path.join(__dirname, 'templates', 'src', 'index.js'))
-    .toString(),
-  vars
-)
-newFiles.component = replaceVars(
-  fs
-    .readFileSync(path.join(__dirname, 'templates', 'src', 'component.vue'))
-    .toString(),
-  vars
-)
-newFiles.storybookConfig = replaceVars(
-  fs
-    .readFileSync(path.join(__dirname, 'templates', 'storybook.config.js'))
-    .toString(),
-  vars
-)
-newFiles.story = replaceVars(
-  fs.readFileSync(path.join(__dirname, 'templates', 'story.js')).toString(),
-  vars
-)
-newFiles.license = replaceVars(
-  fs.readFileSync(path.join(__dirname, 'templates', 'LICENSE')).toString(),
-  vars
-)
-newFiles.readme = replaceVars(
-  fs.readFileSync(path.join(__dirname, 'templates', 'README.md')).toString(),
-  vars
-)
-
-// output files
-const paths = {
-  package: path.join(savePath, 'package.json'),
-  rollupConfig: path.join(savePath, 'build', 'rollup.config.js'),
-  indexjs: path.join(savePath, 'src', 'index.js'),
-  component: path.join(savePath, 'src', componentName + '.vue'),
-  testjs: path.join(savePath, 'test', testFileName),
-  storybookConfig: path.join(savePath, '.storybook', 'config.js'),
-  story: path.join(savePath, 'stories', 'index.js'),
-	license: path.join(savePath, 'LICENSE'),
-	readme: path.join(savePath, 'README.md'),
+if (!ownerName) {
+  console.log(
+    `The owner: ${kleur.dim(`(${OWNER_NAME})`)}`
+  )
+  ownerName = readline.prompt({
+    prompt: promptAngle,
+    defaultInput: OWNER_NAME
+  })
 }
 
-Object.keys(paths).forEach(key => {
-  ensureDirectoryExists(paths[key])
-  fs.writeFileSync(paths[key], newFiles[key])
+const componentName = kebabcasify(npmName)
+const outDir = path.join(process.cwd(), componentName)
+
+const fileActions = new FileActions({
+  argv,
+  pkg,
+  componentName,
+  ownerName,
+  outDir,
+  templatesDir: path.join(__dirname, 'templates')
 })
 
-const copyFiles = [
-  '.editorconfig',
-  '.prettierignore',
-  '.prettierrc',
-  '.babelrc',
-  'styleguide.config.js'
-]
+if (!isUpgrade()) {
+  fileActions.create()
 
-copyFiles.forEach(file => {
-  let src = path.join(__dirname, 'templates', file)
-  let dest = path.join(savePath, file)
-  fs.writeFileSync(dest, fs.readFileSync(src))
-})
+  fileActions.move({
+    patterns: {
+      gitignore: '.gitignore',
+      '_package.json': 'package.json',
+      'src/component.vue': `src/${componentName}.vue`,
+      'src/component.d.ts': `src/${componentName}.d.ts`
+    }
+  })
 
-const ignoreFiles = ['gitignore']
+  setShellFilePermission(outDir)
 
-ignoreFiles.forEach(file => {
-  let src = path.join(__dirname, 'templates', file)
-  let dest = path.join(savePath, '.' + file)
-  fs.writeFileSync(dest, fs.readFileSync(src))
-})
+  logger.success(`Generated into ${kleur.underline(outDir)}`)
+}
 
-// Display completion messages
-console.log(
-  '\n' +
-    'Init is complete, your files have been generated and saved into ' +
-    'the directory you specified above.' +
-    '\n' +
-    'Within that directory, use src/' +
-    componentName +
-    '.vue as a ' +
-    'starting point for your SFC.' +
-    '\n' +
-    "When you're ready, run `npm run build` to generate the redistributable versions." +
-    '\n\n'
-)
+if (isUpgrade()) {
+  fileActions.upgrade()
+}

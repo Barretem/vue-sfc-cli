@@ -1,32 +1,45 @@
 {
   "name": "vue-sfc-cli",
   "description": "Quickly generate redistributable vue sfc components",
-  "version": "0.4.0",
+  "version": "1.13.0",
   "author": "Michael Dodge",
   "contributors": [
     "https://github.com/FEMessage"
   ],
+  "bin": "./init.js",
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/FEMessage/vue-sfc-template.git"
+    "url": "https://github.com/FEMessage/vue-sfc-cli.git"
   },
-  "homepage": "https://github.com/FEMessage/vue-sfc-template.git",
+  "homepage": "https://github.com/FEMessage/vue-sfc-cli.git",
   "keywords": [
     "vue",
     "sfc",
     "template",
-    "compiler",
-    "rollup"
+    "cli",
+    "generator"
   ],
-  "bin": {
-    "init": "./init.js"
+  "scripts": {
+    "test": "echo \"Info: no test specified\"",
+    "preview": "node init --test && cd v-test && yarn --registry=https://registry.npm.taobao.org && yarn doc",
+    "stdver": "standard-version -m '[skip ci] chore(release): v%s'",
+    "release": "gren release --override"
   },
   "dependencies": {
+    "fs-extra": "^7.0.1",
+    "glob": "^7.1.3",
+    "kleur": "^3.0.3",
+    "lodash.set": "^4.3.2",
+    "mri": "^1.1.4",
     "readline-sync": "^1.4.9"
   },
   "engines": {
-    "node": ">=8.1.2 <=8.11",
     "npm": ">=5.2.0"
-  }
+  },
+  "devDependencies": {
+    "@femessage/github-release-notes": "^0.19.0",
+    "standard-version": "^6.0.1"
+  },
+  "gren": "@femessage/grenrc"
 }

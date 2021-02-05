@@ -1,0 +1,60 @@
+{
+  "projectName": "vue-sfc-cli",
+  "projectOwner": "FEMessage",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "levy9527",
+      "name": "levy",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9384365?v=4",
+      "profile": "https://github.com/levy9527/blog",
+      "contributions": [
+        "code",
+        "content",
+        "translation",
+        "ideas",
+        "review"
+      ]
+    },
+    {
+      "login": "evillt",
+      "name": "EVILLT",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19513289?v=4",
+      "profile": "https://evila.me",
+      "contributions": [
+        "code",
+        "bug",
+        "test",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "donaldshen",
+      "name": "Donald Shen",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19591950?v=4",
+      "profile": "https://donaldshen.github.io/portfolio",
+      "contributions": [
+        "code",
+        "test"
+      ]
+    },
+    {
+      "login": "colmugx",
+      "name": "ColMugX",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/21327913?v=4",
+      "profile": "https://colmugx.github.io",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "skipCi": true
+}
