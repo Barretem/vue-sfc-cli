@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const { logger, kebabcasify } = require('./utils')
+const { logger, kebabcasify, formatterPath } = require('./utils')
 const FileActions = require('./lib/fileActions')
 const parseArgs = require('./lib/parseArgs')
 const kleur = require('kleur')
@@ -17,6 +17,7 @@ let pkgName = ''
  */
 let npmName = argv.get('name')
 let ownerName = argv.get('owner')
+let outPath = argv.get('path')
 const OWNER_NAME = 'FEMessage'
 
 function isUpgrade() {
@@ -57,8 +58,14 @@ if (!ownerName) {
   })
 }
 
+if (outPath) {
+  outPath = formatterPath(outPath)
+} else {
+  outPath = process.cwd()
+}
+
 const componentName = kebabcasify(npmName)
-const outDir = path.join(process.cwd(), componentName)
+const outDir = path.join(outPath, componentName)
 
 const fileActions = new FileActions({
   argv,

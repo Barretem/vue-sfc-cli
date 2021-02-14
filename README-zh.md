@@ -10,23 +10,25 @@
 
 ## Table Of Contents
 
-- [Links](#links)
-- [注意事项](#注意事项)
-  - [环境需求](#环境需求)
-  - [Prettier and husky](#prettier-and-husky)
-  - [Stylelint](#stylelint)
-  - [Windows](#windows)
-- [使用教程](#使用教程)
-  - [快速开始](#快速开始)
-  - [参数选项](#参数选项)
-  - [示例文档](#示例文档)
-  - [API文档](#api文档)
-    - [props](#props)
-    - [slot](#slot)
-    - [event](#event)
-    - [methods](#methods)
-  - [引入第三方库](#引入第三方库)
-  - [环境变量](#环境变量)
+- [vue-sfc-cli](#vue-sfc-cli)
+  - [Table Of Contents](#table-of-contents)
+  - [Links](#links)
+  - [注意事项](#注意事项)
+    - [环境需求](#环境需求)
+    - [Prettier and husky](#prettier-and-husky)
+    - [Stylelint](#stylelint)
+    - [Windows](#windows)
+  - [使用教程](#使用教程)
+    - [快速开始](#快速开始)
+    - [参数选项](#参数选项)
+    - [示例文档](#示例文档)
+    - [API文档](#api文档)
+      - [props](#props)
+      - [slot](#slot)
+      - [event](#event)
+      - [methods](#methods)
+    - [引入第三方库](#引入第三方库)
+    - [环境变量](#环境变量)
 
 ## Links
 
@@ -108,6 +110,14 @@ npx vue-sfc-cli -u --files .babelrc.js,.eslintrc.js
 
 ```
 npx vue-sfc-cli --test
+```
+
+`--path` 
+
+在指定的文件路径生成组件模板。
+
+```
+npx vue-sfc-cli --path ./outDir
 ```
 
 `--name`, `--owner`

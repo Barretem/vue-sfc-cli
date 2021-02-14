@@ -14,24 +14,26 @@ It makes writing docs and demo easily, integrated with an automated github workf
 
 ## Table Of Contents
 
-- [Links](#links)
-- [Notice](#notice)
-  - [Requirement](#requirement)
-  - [Prettier and husky](#prettier-and-husky)
-  - [Stylelint](#stylelint)
-  - [Windows](#windows)
-- [Tutorial](#tutorial)
-  - [Quick Start](#quick-start)
-  - [Options](#options)
-  - [Writing Example](#writing-example)
-  - [API Documentation](#api-documentation)
-    - [Props](#props)
-    - [Slot](#slot)
-    - [Event](#event)
-    - [Methods](#methods)
-  - [Working with third-party library](#working-with-third-party-library)
-  - [Environment variable](#environment-variable)
-- [Contributors](#contributors)
+- [vue-sfc-cli](#vue-sfc-cli)
+  - [Table Of Contents](#table-of-contents)
+  - [Links](#links)
+  - [Notice](#notice)
+    - [Requirement](#requirement)
+    - [Prettier and husky](#prettier-and-husky)
+    - [Stylelint](#stylelint)
+    - [Windows](#windows)
+  - [Tutorial](#tutorial)
+    - [Quick Start](#quick-start)
+    - [Options](#options)
+    - [Writing Example](#writing-example)
+    - [API Documentation](#api-documentation)
+      - [Props](#props)
+      - [Slot](#slot)
+      - [Event](#event)
+      - [Methods](#methods)
+    - [Working with third-party library](#working-with-third-party-library)
+    - [Environment variable](#environment-variable)
+  - [Contributors](#contributors)
 
 ## Links
 
@@ -123,6 +125,14 @@ Generate a component template for testing, commonly used in CI .
 
 ```
 npx vue-sfc-cli --test
+```
+
+`--path` 
+
+Generate a component template in the specific file path .
+
+```
+npx vue-sfc-cli --path ./outDir
 ```
 
 `--name`, `--owner`
